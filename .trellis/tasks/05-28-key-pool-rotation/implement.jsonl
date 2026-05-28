@@ -1,0 +1,8 @@
+{"file": ".trellis/tasks/05-28-key-pool-rotation/prd.md", "reason": "本任务的需求规约和技术决策（ADR），所有实施都基于此文档"}
+{"file": ".trellis/spec/backend/index.md", "reason": "后端编码规范入口"}
+{"file": ".trellis/spec/backend/error-handling.md", "reason": "错误处理规范（key 池故障切换涉及大量错误处理）"}
+{"file": ".trellis/spec/backend/quality-guidelines.md", "reason": "后端代码质量与测试规范"}
+{"file": ".trellis/spec/frontend/index.md", "reason": "前端编码规范入口（阶段 2 加密码 UI 时需要）"}
+{"file": ".trellis/spec/frontend/component-guidelines.md", "reason": "React 组件规范（密码输入组件遵循）"}
+{"file": ".trellis/spec/frontend/state-management.md", "reason": "状态管理规范（密码状态、localStorage 持久化）"}
+{"file": ".trellis/spec/guides/code-reuse-thinking-guide.md", "reason": "改动前先 grep 已有实现，避免重复造轮子"}

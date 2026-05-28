@@ -1,0 +1,4 @@
+{"file": ".trellis/tasks/05-28-key-pool-rotation/prd.md", "reason": "本任务的验收标准（Acceptance Criteria），check agent 据此校验"}
+{"file": ".trellis/spec/backend/quality-guidelines.md", "reason": "后端代码质量与测试规范"}
+{"file": ".trellis/spec/frontend/quality-guidelines.md", "reason": "前端代码质量规范"}
+{"file": ".trellis/spec/guides/cross-layer-thinking-guide.md", "reason": "跨层数据流检查（密码 header 从前端到后端一致性、key 池状态隔离）"}
