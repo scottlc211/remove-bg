@@ -1,8 +1,11 @@
 import { ChangeEvent, DragEvent, useEffect, useMemo, useRef, useState } from 'react';
+import { PasswordGate } from './components/PasswordGate';
+import { clearPassword, getStoredPassword } from './lib/auth';
+import { compressImage } from './lib/compress';
 
 type ProcessStatus = 'idle' | 'ready' | 'processing' | 'done' | 'error';
 type TargetType = 'person' | 'product' | 'auto';
-type QualityMode = 'best' | 'fast';
+type SizeMode = 'auto' | 'preview' | 'full' | '50MP';
 
 type HistoryItem = {
   id: string;
@@ -19,6 +22,12 @@ const targetOptions: Array<{ value: TargetType; label: string; hint: string }> =
   { value: 'person', label: '人物优先', hint: '减少人物边缘漏抠' },
   { value: 'product', label: '商品优先', hint: '适合产品主图' },
   { value: 'auto', label: '自动识别', hint: '通用图片处理' }
+];
+
+const sizeOptions: Array<{ value: SizeMode; label: string }> = [
+  { value: 'auto', label: '自动尺寸' },
+  { value: 'preview', label: '预览图' },
+  { value: 'full', label: '原图尺寸' }
 ];
 
 function formatBytes(bytes: number) {
@@ -41,7 +50,7 @@ function safeBaseName(name: string) {
   return (
     withoutExt
       .trim()
-      .replace(/[^a-zA-Z0-9\u4e00-\u9fa5_-]+/g, '-')
+      .replace(/[^a-zA-Z0-9一-龥_-]+/g, '-')
       .replace(/^-+|-+$/g, '') || 'image'
   );
 }
@@ -169,6 +178,16 @@ function ComparisonCard({ sourceUrl, resultUrl, status }: { sourceUrl: string; r
 }
 
 function App() {
+  const [authed, setAuthed] = useState<boolean>(() => getStoredPassword() !== null);
+
+  if (!authed) {
+    return <PasswordGate onAuth={() => setAuthed(true)} />;
+  }
+
+  return <MainApp />;
+}
+
+function MainApp() {
   const inputRef = useRef<HTMLInputElement>(null);
   const jobIdRef = useRef(0);
   const [sourceFile, setSourceFile] = useState<File | null>(null);
@@ -180,7 +199,7 @@ function App() {
   const [isDragging, setIsDragging] = useState(false);
   const [history, setHistory] = useState<HistoryItem[]>([]);
   const [targetType, setTargetType] = useState<TargetType>('person');
-  const [quality, setQuality] = useState<QualityMode>('best');
+  const [sizeMode, setSizeMode] = useState<SizeMode>('auto');
   const [provider, setProvider] = useState('');
 
   const resultFileName = useMemo(() => (sourceFile ? makeResultName(sourceFile.name) : 'transparent-background.png'), [sourceFile]);
@@ -229,7 +248,7 @@ function App() {
     setSourceFile(file);
     setSourceUrl(URL.createObjectURL(file));
     setStatus('ready');
-    void processImage(file, targetType, quality);
+    void processImage(file, targetType, sizeMode);
   }
 
   function handleInputChange(event: ChangeEvent<HTMLInputElement>) {
@@ -245,7 +264,12 @@ function App() {
     if (file) loadFile(file);
   }
 
-  async function processImage(file = sourceFile, selectedTarget = targetType, selectedQuality = quality) {
+  function handleSignOut() {
+    clearPassword();
+    window.location.reload();
+  }
+
+  async function processImage(file = sourceFile, selectedTarget = targetType, selectedSize = sizeMode) {
     if (!file) return;
 
     const jobId = jobIdRef.current + 1;
@@ -255,15 +279,40 @@ function App() {
     setError('');
 
     try {
-      const formData = new FormData();
-      formData.append('image', file);
-      formData.append('targetType', selectedTarget);
-      formData.append('quality', selectedQuality);
+      const compressed = await compressImage(file);
+      if (jobIdRef.current !== jobId) return;
+
+      const password = getStoredPassword();
+      if (!password) {
+        // 密码丢失（用户在其他标签清除了 localStorage 等）
+        clearPassword();
+        window.location.reload();
+        return;
+      }
 
       const response = await fetch('/api/remove-bg', {
         method: 'POST',
-        body: formData
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Access-Password': password
+        },
+        body: JSON.stringify({
+          image: compressed.dataUrl,
+          targetType: selectedTarget,
+          size: selectedSize
+        })
       });
+
+      if (response.status === 401) {
+        // 密码失效：清除存储并 reload 回登录页
+        clearPassword();
+        window.location.reload();
+        return;
+      }
+
+      if (response.status === 503) {
+        throw new Error('所有 API 配额已用完，请稍后重试');
+      }
 
       if (!response.ok) {
         const message = await readErrorMessage(response);
@@ -277,7 +326,7 @@ function App() {
 
       const blob = new Blob([await response.arrayBuffer()], { type: 'image/png' });
       const objectUrl = URL.createObjectURL(blob);
-      const providerName = response.headers.get('X-Remove-Bg-Provider') || 'local';
+      const providerName = response.headers.get('X-Remove-Bg-Provider') || 'remove.bg';
 
       if (jobIdRef.current !== jobId) {
         URL.revokeObjectURL(objectUrl);
@@ -313,14 +362,14 @@ function App() {
   function retryWithTarget(nextTarget: TargetType) {
     setTargetType(nextTarget);
     if (sourceFile && status !== 'processing') {
-      void processImage(sourceFile, nextTarget, quality);
+      void processImage(sourceFile, nextTarget, sizeMode);
     }
   }
 
-  function retryWithQuality(nextQuality: QualityMode) {
-    setQuality(nextQuality);
+  function retryWithSize(nextSize: SizeMode) {
+    setSizeMode(nextSize);
     if (sourceFile && status !== 'processing') {
-      void processImage(sourceFile, targetType, nextQuality);
+      void processImage(sourceFile, targetType, nextSize);
     }
   }
 
@@ -345,8 +394,6 @@ function App() {
         <div className="nav-links" aria-label="页面导航">
           <a className="active" href="#home">首页</a>
           <a href="#how">使用方法</a>
-          <a href="#api">API 接口</a>
-          <a href="#pricing">定价</a>
         </div>
         <div className="nav-actions">
           <button className="language-button" type="button">
@@ -354,7 +401,7 @@ function App() {
             简体中文
             <span className="chevron">⌄</span>
           </button>
-          <button className="login-button" type="button">登录 / 注册</button>
+          <button className="login-button" type="button" onClick={handleSignOut}>退出登录</button>
         </div>
       </nav>
 
@@ -397,7 +444,7 @@ function App() {
               上传图片
             </button>
             <strong>或拖拽图片到此处上传</strong>
-            <small>支持 JPG、PNG、WebP，最大 20MB</small>
+            <small>支持 JPG、PNG、WebP，最大 20MB（上传前会自动压缩）</small>
           </div>
 
           <div className="control-row" aria-label="处理模式">
@@ -416,12 +463,17 @@ function App() {
           </div>
 
           <div className="quality-row">
-            <button className={quality === 'best' ? 'quality-chip active' : 'quality-chip'} disabled={status === 'processing'} onClick={() => retryWithQuality('best')} type="button">
-              高清优先
-            </button>
-            <button className={quality === 'fast' ? 'quality-chip active' : 'quality-chip'} disabled={status === 'processing'} onClick={() => retryWithQuality('fast')} type="button">
-              快速模式
-            </button>
+            {sizeOptions.map((option) => (
+              <button
+                key={option.value}
+                className={sizeMode === option.value ? 'quality-chip active' : 'quality-chip'}
+                disabled={status === 'processing'}
+                onClick={() => retryWithSize(option.value)}
+                type="button"
+              >
+                {option.label}
+              </button>
+            ))}
             {sourceFile && (
               <button className="text-action" disabled={!canProcess} onClick={() => processImage()} type="button">
                 重新处理
@@ -466,8 +518,8 @@ function App() {
         <article>
           <FeatureIcon type="privacy" />
           <div>
-            <h2>隐私安全</h2>
-            <p>无 API Key 时走本地模型兜底</p>
+            <h2>密码保护</h2>
+            <p>预共享密码守门，避免链接被外人滥用</p>
           </div>
         </article>
         <article>
