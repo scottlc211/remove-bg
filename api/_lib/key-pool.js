@@ -12,7 +12,7 @@ const exhaustedKeys = new Set();
 
 /**
  * 自定义错误：所有 key 都已耗尽或不可用时抛出。
- * 上层（Express 错误中间件）应识别该类型并返回 HTTP 503。
+ * 上层应识别该类型并返回 HTTP 503。
  * 注意：错误信息不得包含具体的 key 字符串，避免日志/响应泄露。
  */
 export class QuotaExhaustedError extends Error {
@@ -77,4 +77,49 @@ export function markExhausted(key) {
  */
 export function _resetForTesting() {
   exhaustedKeys.clear();
+}
+
+/**
+ * 粘性 + 故障切换执行器。
+ *
+ * 依次用每个可用 key 调用 `attempt(key)`：
+ *   - 返回值即视为成功，直接 resolve（粘性：第一个成功的 key 用到底）
+ *   - 抛出标记了 `exhausted: true` 的错误（402/429）→ markExhausted 后切下一个
+ *   - 抛出标记了 `transient: true` 的错误（网络抖动）→ 不标记，切下一个重试
+ *   - 抛出其他错误 → 立即向上抛（跟具体 key 无关，例如 4xx/5xx）
+ *
+ * 全部 key 走完仍未成功（全部 402/429 或全部网络错误）→ 抛 QuotaExhaustedError。
+ *
+ * 把这段逻辑从 handler 中抽出来，便于注入 mock attempt 做单元测试，
+ * 覆盖 PRD 要求的"轮询 / 故障切换 / 耗尽报错"三条核心路径。
+ *
+ * @template T
+ * @param {(key: string) => Promise<T>} attempt 用给定 key 执行一次远程调用
+ * @returns {Promise<T>}
+ */
+export async function runWithFailover(attempt) {
+  const available = getAvailableKeys();
+  if (available.length === 0) {
+    throw new QuotaExhaustedError('所有 API 配额已用完，请稍后重试');
+  }
+
+  for (const key of available) {
+    try {
+      return await attempt(key);
+    } catch (error) {
+      if (error && error.exhausted) {
+        markExhausted(key);
+        continue;
+      }
+      if (error && error.transient) {
+        // 网络抖动：不标记 exhausted，换下一个 key 重试。
+        continue;
+      }
+      // 其他错误跟 key 无关，立即抛出（保持原 handler 行为）。
+      throw error;
+    }
+  }
+
+  // 全部 key 都失败（402/429 或网络错误）。
+  throw new QuotaExhaustedError('所有 API 配额已用完，请稍后重试');
 }

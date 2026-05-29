@@ -4,29 +4,20 @@
   "version": "0.1.0",
   "type": "module",
   "scripts": {
-    "dev": "concurrently -k -n api,web \"node server/index.js\" \"vite --host 0.0.0.0\"",
-    "dev:api": "node server/index.js",
-    "dev:web": "vite --host 0.0.0.0",
+    "dev": "vite --host 0.0.0.0",
     "build": "tsc -b && vite build",
-    "start": "node server/index.js",
-    "preview": "vite preview --host 0.0.0.0"
+    "preview": "vite preview --host 0.0.0.0",
+    "test:api": "node --test api/_lib/key-pool.test.js"
   },
   "dependencies": {
-    "@imgly/background-removal-node": "^1.4.5",
     "@vitejs/plugin-react": "^5.0.4",
-    "express": "^5.2.1",
-    "multer": "^2.1.1",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
-    "sharp": "^0.32.6",
     "vite": "^7.1.7"
   },
   "devDependencies": {
-    "@types/express": "^5.0.6",
-    "@types/multer": "^2.1.0",
     "@types/react": "^19.2.2",
     "@types/react-dom": "^19.2.2",
-    "concurrently": "^9.2.1",
     "typescript": "~5.9.3"
   }
 }

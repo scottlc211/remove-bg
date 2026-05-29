@@ -5,6 +5,7 @@ import {
   loadKeys,
   getAvailableKeys,
   markExhausted,
+  runWithFailover,
   QuotaExhaustedError,
   _resetForTesting
 } from './key-pool.js';
@@ -117,5 +118,107 @@ describe('key-pool: QuotaExhaustedError', () => {
     const error = new QuotaExhaustedError();
     assert.ok(!error.message.includes('keyA'));
     assert.ok(!error.message.includes('JS2rh9pE'));
+  });
+});
+
+function exhaustedError() {
+  const error = new Error('配额耗尽或被限流');
+  error.exhausted = true;
+  return error;
+}
+
+function transientError() {
+  const error = new Error('网络抖动');
+  error.transient = true;
+  return error;
+}
+
+describe('key-pool: runWithFailover', () => {
+  beforeEach(() => {
+    _resetForTesting();
+    setEnv({ REMOVE_BG_API_KEYS: 'keyA,keyB,keyC' });
+  });
+
+  it('粘性使用：第一个 key 成功就直接返回，不尝试其他 key', async () => {
+    const tried = [];
+    const result = await runWithFailover(async (key) => {
+      tried.push(key);
+      return `ok-${key}`;
+    });
+    assert.equal(result, 'ok-keyA');
+    assert.deepEqual(tried, ['keyA']);
+  });
+
+  it('故障切换：keyA 返回 402(exhausted) 时自动切到 keyB 完成', async () => {
+    const tried = [];
+    const result = await runWithFailover(async (key) => {
+      tried.push(key);
+      if (key === 'keyA') throw exhaustedError();
+      return `ok-${key}`;
+    });
+    assert.equal(result, 'ok-keyB');
+    assert.deepEqual(tried, ['keyA', 'keyB']);
+    // keyA 被标记为耗尽，后续不再可用
+    assert.deepEqual(getAvailableKeys(), ['keyB', 'keyC']);
+  });
+
+  it('耗尽报错：所有 key 都 402 时抛 QuotaExhaustedError 且不泄露 key', async () => {
+    await assert.rejects(
+      runWithFailover(async () => {
+        throw exhaustedError();
+      }),
+      (error) => {
+        assert.ok(error instanceof QuotaExhaustedError);
+        assert.equal(error.message, '所有 API 配额已用完，请稍后重试');
+        assert.ok(!error.message.includes('keyA'));
+        return true;
+      }
+    );
+    // 全部被标记耗尽
+    assert.deepEqual(getAvailableKeys(), []);
+  });
+
+  it('没有可用 key 时直接抛 QuotaExhaustedError，attempt 不被调用', async () => {
+    markExhausted('keyA');
+    markExhausted('keyB');
+    markExhausted('keyC');
+    let called = false;
+    await assert.rejects(
+      runWithFailover(async () => {
+        called = true;
+        return 'ok';
+      }),
+      QuotaExhaustedError
+    );
+    assert.equal(called, false);
+  });
+
+  it('网络抖动(transient)不标记耗尽，但仍切换到下一个 key 重试', async () => {
+    const result = await runWithFailover(async (key) => {
+      if (key === 'keyA') throw transientError();
+      return `ok-${key}`;
+    });
+    assert.equal(result, 'ok-keyB');
+    // transient 不应把 keyA 标记为耗尽
+    assert.deepEqual(getAvailableKeys(), ['keyA', 'keyB', 'keyC']);
+  });
+
+  it('非 402/429 的普通错误立即向上抛出，不切换 key', async () => {
+    const tried = [];
+    await assert.rejects(
+      runWithFailover(async (key) => {
+        tried.push(key);
+        throw new Error('remove.bg 服务端 500');
+      }),
+      (error) => {
+        assert.ok(!(error instanceof QuotaExhaustedError));
+        assert.equal(error.message, 'remove.bg 服务端 500');
+        return true;
+      }
+    );
+    // 只尝试了第一个 key，没有切换
+    assert.deepEqual(tried, ['keyA']);
+    // 也没有把 keyA 标记为耗尽
+    assert.deepEqual(getAvailableKeys(), ['keyA', 'keyB', 'keyC']);
   });
 });
