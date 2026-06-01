@@ -14,12 +14,12 @@ This directory contains guidelines for frontend development. Fill in each file w
 
 | Guide | Description | Status |
 |-------|-------------|--------|
-| [Directory Structure](./directory-structure.md) | Module organization and file layout | To fill |
-| [Component Guidelines](./component-guidelines.md) | Component patterns, props, composition | To fill |
-| [Hook Guidelines](./hook-guidelines.md) | Custom hooks, data fetching patterns | To fill |
-| [State Management](./state-management.md) | Local state, global state, server state | To fill |
-| [Quality Guidelines](./quality-guidelines.md) | Code standards, forbidden patterns | To fill |
-| [Type Safety](./type-safety.md) | Type patterns, validation | To fill |
+| [Directory Structure](./directory-structure.md) | src 布局、components vs lib 二分、内联子组件约定 | Filled |
+| [Component Guidelines](./component-guidelines.md) | 函数组件、Props type 约定、内联 SVG、a11y 硬性要求 | Filled |
+| [Hook Guidelines](./hook-guidelines.md) | 零自定义 hook 现实、内置 hook 用法、何时才抽 hook | Filled |
+| [State Management](./state-management.md) | 仅 useState、ProcessStatus 状态机、jobIdRef 竞态防护 | Filled |
+| [Quality Guidelines](./quality-guidelines.md) | tsc 唯一闸门、无前端测试现实、资源清理/竞态/a11y 必守项 | Filled |
+| [Type Safety](./type-safety.md) | strict 全开、联合字面量、type 而非 interface、禁 any | Filled |
 
 ---
 

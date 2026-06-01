@@ -15,10 +15,10 @@ This directory contains guidelines for backend development. Fill in each file wi
 | Guide | Description | Status |
 |-------|-------------|--------|
 | [Directory Structure](./directory-structure.md) | Vercel Functions 布局、`_lib` 路由约定、迁移 gotcha | Filled |
-| [Database Guidelines](./database-guidelines.md) | ORM patterns, queries, migrations | To fill |
+| [Database Guidelines](./database-guidelines.md) | 无数据库：无状态现实、唯一的 module-level Set、禁止凭空引入持久层 | Filled |
 | [Error Handling](./error-handling.md) | key 池故障切换、错误矩阵、状态码契约 | Filled |
-| [Quality Guidelines](./quality-guidelines.md) | Code standards, forbidden patterns | To fill |
-| [Logging Guidelines](./logging-guidelines.md) | Structured logging, log levels | To fill |
+| [Quality Guidelines](./quality-guidelines.md) | tsc + node:test 双闸门、禁止/必须 pattern、测试约定、Review 清单 | Filled |
+| [Logging Guidelines](./logging-guidelines.md) | 当前零日志现实、Vercel 自动捕获、绝不记 key/密码的安全红线 | Filled |
 
 ---
 

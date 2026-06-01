@@ -89,7 +89,7 @@ if (!process.env.ACCESS_PASSWORD || process.env.ACCESS_PASSWORD.length === 0) {
 
 **Why**: 把"配置不完整"变成**部署时/冷启动时**就暴露的硬错误，而不是运行时的安全漏洞。任何 import 了 `auth.js` 的 handler（`remove-bg`、`health`）都自动受保护。
 
-> **Gotcha（测试）**: 因为是模块顶层 throw，跑 API 单测时必须先注入 `ACCESS_PASSWORD`（见 `package.json` 的 `test:api`：`ACCESS_PASSWORD=dummy node --test`），否则 import 阶段就崩。
+> **Gotcha（测试）**: 因为是模块顶层 throw，**任何 import 了 `auth.js` 的测试**（或 import 它的 handler）在跑前都必须注入 `ACCESS_PASSWORD`，否则 import 阶段就崩。当前 `test:api` 只跑 `api/_lib/key-pool.test.js`（不 import `auth.js`），所以暂不需要；新增涉及 `auth.js` 的测试时记得用 `ACCESS_PASSWORD=dummy node --test ...`。
 
 ---
 
