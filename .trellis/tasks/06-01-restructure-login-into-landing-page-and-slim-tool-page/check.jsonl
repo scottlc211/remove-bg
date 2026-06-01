@@ -1,0 +1,5 @@
+{"file": ".trellis/spec/frontend/quality-guidelines.md", "reason": "Code Review Checklist：构建通过、a11y、资源清理配对、竞态防护、浏览器手验两态"}
+{"file": ".trellis/spec/frontend/type-safety.md", "reason": "核对 type 非 interface、无 any/绕错 as、无未使用变量（抽取图标/迁移区块后易残留）"}
+{"file": ".trellis/spec/frontend/component-guidelines.md", "reason": "核对函数组件/命名导出/styles.css 约定/a11y（Hero 浅字对比、表单 aria-* 保留、装饰层 aria-hidden）"}
+{"file": ".trellis/spec/frontend/state-management.md", "reason": "核对精简后的 MainApp 仍保留 ProcessStatus 状态机、jobIdRef 竞态防护与 object URL 清理"}
+{"file": ".trellis/tasks/06-01-restructure-login-into-landing-page-and-slim-tool-page/research/landing-design.md", "reason": "比对实现是否符合设计规范（IA、Hero-on-dark scrim/对比、背景边界、响应式 1180/760）"}

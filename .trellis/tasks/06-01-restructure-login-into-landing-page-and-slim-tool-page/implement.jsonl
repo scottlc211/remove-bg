@@ -1,0 +1,6 @@
+{"file": ".trellis/spec/frontend/directory-structure.md", "reason": "新增 AuthCard/LandingPage/icons 组件落点与命名导出；components vs lib 二分"}
+{"file": ".trellis/spec/frontend/component-guidelines.md", "reason": "函数声明式组件、type Props、样式走单一 styles.css、a11y（Hero 浅色文案、scrim aria-hidden、表单 a11y 原样保留）"}
+{"file": ".trellis/spec/frontend/type-safety.md", "reason": "type 非 interface、禁 any；移动/抽取代码时严防 noUnusedLocals/Params 卡构建"}
+{"file": ".trellis/spec/frontend/state-management.md", "reason": "精简 MainApp 时必须保留 ProcessStatus 状态机与 jobIdRef 竞态防护、资源清理，不得破坏现有逻辑"}
+{"file": ".trellis/spec/frontend/quality-guidelines.md", "reason": "构建闸门 npm run build、a11y、资源清理（GradientBlinds 复用）、改 UI 须浏览器验证两态"}
+{"file": ".trellis/tasks/06-01-restructure-login-into-landing-page-and-slim-tool-page/research/landing-design.md", "reason": "落地页+精简工具页完整设计规范：信息架构、线框、Hero-on-dark、CSS 类规划、响应式、a11y、实现说明"}

@@ -856,6 +856,120 @@ h1 span {
   }
 }
 
+/* ===== Landing ===== */
+.landing-shell {
+  position: relative;
+  min-height: 100dvh;
+  overflow: hidden;
+  padding: 0 clamp(14px, 2.5vw, 46px) 64px;
+  background:
+    radial-gradient(circle at 8% 10%, rgba(36, 104, 242, 0.09), transparent 28vw),
+    radial-gradient(circle at 82% 14%, rgba(102, 165, 255, 0.12), transparent 30vw),
+    linear-gradient(180deg, #f8fbff 0%, #f5f9ff 54%, #ffffff 100%);
+}
+
+.landing-shell::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.48;
+  background-image:
+    linear-gradient(rgba(38, 94, 180, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(38, 94, 180, 0.035) 1px, transparent 1px);
+  background-size: 32px 32px;
+  mask-image: linear-gradient(to bottom, #000 0%, transparent 84%);
+}
+
+/* 导航右侧「登录」滚动锚（落地页用，复用 .login-button 渐变样式） */
+.nav-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.landing-hero {
+  position: relative;
+  z-index: 1;
+  overflow: hidden;
+  border-radius: 24px;
+  display: grid;
+  grid-template-columns: minmax(420px, 1.05fr) minmax(360px, 0.95fr);
+  align-items: center;
+  gap: clamp(40px, 7vw, 110px);
+  width: min(1560px, 100%);
+  margin: 18px auto 64px;
+  padding: clamp(48px, 6vw, 90px) clamp(28px, 4vw, 64px);
+  min-height: 560px;
+}
+
+.hero-scrim {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background: linear-gradient(100deg, rgba(8, 24, 64, 0.62) 0%, rgba(8, 24, 64, 0.30) 46%, rgba(8, 24, 64, 0.10) 100%);
+}
+
+.hero-copy-dark {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  gap: 22px;
+}
+
+.hero-copy-dark h1 {
+  color: #ffffff;
+  text-shadow: 0 2px 18px rgba(4, 16, 46, 0.45);
+}
+
+.hero-copy-dark h1 span {
+  color: #9ec5ff;
+}
+
+.hero-copy-dark .hero-lede {
+  color: rgba(255, 255, 255, 0.86);
+}
+
+.hero-points {
+  display: grid;
+  gap: 14px;
+  margin: 6px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.hero-points li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: rgba(255, 255, 255, 0.92);
+  font-size: clamp(16px, 1.2vw, 19px);
+  font-weight: 640;
+}
+
+.hero-points li::before {
+  content: "✓";
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  width: 26px;
+  height: 26px;
+  border-radius: 999px;
+  color: #9ec5ff;
+  background: rgba(158, 197, 255, 0.16);
+  box-shadow: inset 0 0 0 1px rgba(158, 197, 255, 0.45);
+  font-weight: 800;
+  font-size: 14px;
+}
+
+.hero-auth {
+  position: relative;
+  z-index: 1;
+  justify-self: center;
+  width: min(420px, 100%);
+}
+
 @media (max-width: 1180px) {
   .topbar {
     grid-template-columns: 1fr;
@@ -882,6 +996,21 @@ h1 span {
 
   .feature-strip {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .landing-hero {
+    grid-template-columns: 1fr;
+    min-height: auto;
+    gap: 34px;
+    padding: clamp(40px, 6vw, 64px) clamp(20px, 4vw, 40px);
+  }
+
+  .hero-auth {
+    justify-self: center;
+  }
+
+  .hero-scrim {
+    background: linear-gradient(180deg, rgba(8, 24, 64, 0.58) 0%, rgba(8, 24, 64, 0.30) 70%, rgba(8, 24, 64, 0.14) 100%);
   }
 }
 
@@ -964,6 +1093,19 @@ h1 span {
   .steps-row article:not(:last-child)::after {
     display: none;
   }
+
+  .landing-shell {
+    padding: 0 14px 42px;
+  }
+
+  .landing-hero {
+    border-radius: 18px;
+    padding: 40px 18px;
+  }
+
+  .hero-points li {
+    font-size: 16px;
+  }
 }
 
 /* ============ 密码门 PasswordGate ============ */
@@ -1000,12 +1142,11 @@ h1 span {
   overflow: hidden;
 }
 
-/* GradientBlinds 作密码门背景层：铺满 .gate-shell、置于卡片(z-index:1)之下、不拦截交互 */
+/* GradientBlinds 作密码门背景层：铺满 .gate-shell、置于卡片(z-index:1)之下；canvas 需接收指针事件以驱动 spotlight，表单靠卡片更高的 z-index 仍可正常交互 */
 .gate-bg {
   position: absolute;
   inset: 0;
   z-index: 0;
-  pointer-events: none;
 }
 
 .gate-card {
