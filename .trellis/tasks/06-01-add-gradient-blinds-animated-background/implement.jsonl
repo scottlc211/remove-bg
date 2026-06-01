@@ -1,0 +1,6 @@
+{"file": ".trellis/spec/frontend/directory-structure.md", "reason": "新增可复用组件落点与命名：src/components/GradientBlinds.tsx，命名导出（非 default）"}
+{"file": ".trellis/spec/frontend/component-guidelines.md", "reason": "函数声明式组件、type Props、样式走单一 styles.css（禁组件级 css import）、装饰性背景需 aria-hidden"}
+{"file": ".trellis/spec/frontend/type-safety.md", "reason": "strict + noUnusedLocals/Params；type 而非 interface；禁 any 与绕错 as"}
+{"file": ".trellis/spec/frontend/quality-guidelines.md", "reason": "资源清理硬要求（WebGL context/RAF/事件监听卸载释放，StrictMode 双挂载安全）；构建闸门 npm run build；改 UI 须浏览器验证"}
+{"file": ".trellis/spec/frontend/hook-guidelines.md", "reason": "useEffect/useRef 重度使用的组件写法约定；何时才抽自定义 hook"}
+{"file": ".trellis/tasks/06-01-add-gradient-blinds-animated-background/research/gradient-blinds-source.md", "reason": "Gradient Blinds 官方逐字源码、17 个 props 默认值、ogl ^1.0.11、清理/StrictMode 注意事项"}

@@ -1,0 +1,4 @@
+{"file": ".trellis/spec/frontend/quality-guidelines.md", "reason": "Code Review Checklist：资源清理配对、a11y、构建通过、无 any、浏览器手验"}
+{"file": ".trellis/spec/frontend/type-safety.md", "reason": "核对 type 非 interface、无 any/绕错 as、无未使用变量（noUnusedLocals/Params）"}
+{"file": ".trellis/spec/frontend/component-guidelines.md", "reason": "核对函数组件写法、命名导出、styles.css 样式约定、装饰背景 aria-hidden"}
+{"file": ".trellis/tasks/06-01-add-gradient-blinds-animated-background/research/gradient-blinds-source.md", "reason": "比对实现是否忠实官方源码，核对 WebGL/RAF/监听器 teardown 与 StrictMode 安全"}

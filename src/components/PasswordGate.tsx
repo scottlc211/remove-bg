@@ -1,14 +1,22 @@
 import { FormEvent, useState } from 'react';
 import { storePassword } from '../lib/auth';
+import { GradientBlinds } from './GradientBlinds';
 
 type Props = {
   onAuth: () => void;
 };
 
+// 模块级常量：稳定引用，避免每次输入触发 GradientBlinds 的 WebGL 重建
+const GATE_GRADIENT = ['#0e4fd0', '#2468f2', '#66a5ff'];
+
 export function PasswordGate({ onAuth }: Props) {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [submitting, setSubmitting] = useState(false);
+  // 动画为 RAF 驱动，CSS 的 prefers-reduced-motion 停不了它，故在此显式探测并 paused
+  const [reduceMotion] = useState(
+    () => typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  );
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -46,6 +54,16 @@ export function PasswordGate({ onAuth }: Props) {
 
   return (
     <main className="gate-shell">
+      <GradientBlinds
+        className="gate-bg"
+        gradientColors={GATE_GRADIENT}
+        mixBlendMode="normal"
+        angle={20}
+        noise={0.15}
+        blindCount={14}
+        spotlightRadius={0.6}
+        paused={reduceMotion}
+      />
       <form className="gate-card" onSubmit={handleSubmit} aria-label="访问密码">
         <h1>BG Remover</h1>
         <p>请输入访问密码进入</p>
