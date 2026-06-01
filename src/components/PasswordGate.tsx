@@ -58,11 +58,17 @@ export function PasswordGate({ onAuth }: Props) {
           value={password}
           onChange={(event) => setPassword(event.target.value)}
           disabled={submitting}
+          aria-invalid={!!error}
+          aria-describedby={error ? 'gate-error' : undefined}
         />
-        <button className="gate-submit" type="submit" disabled={submitting}>
+        <button className="gate-submit" type="submit" disabled={submitting} aria-busy={submitting}>
           {submitting ? '校验中…' : '进入'}
         </button>
-        {error && <div className="gate-error">{error}</div>}
+        {error && (
+          <div className="gate-error" id="gate-error" role="alert" aria-live="assertive">
+            {error}
+          </div>
+        )}
       </form>
     </main>
   );

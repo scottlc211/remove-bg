@@ -965,3 +965,182 @@ h1 span {
     display: none;
   }
 }
+
+/* ============ 密码门 PasswordGate ============ */
+.gate-shell {
+  position: relative;
+  display: grid;
+  place-items: center;
+  min-height: 100dvh;
+  padding: 24px;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 12% 8%, rgba(36, 104, 242, 0.10), transparent 32vw),
+    radial-gradient(circle at 86% 16%, rgba(102, 165, 255, 0.13), transparent 34vw),
+    linear-gradient(180deg, #f8fbff 0%, #f5f9ff 54%, #ffffff 100%);
+}
+
+.gate-shell::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.42;
+  background-image:
+    linear-gradient(rgba(38, 94, 180, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(38, 94, 180, 0.035) 1px, transparent 1px);
+  background-size: 32px 32px;
+  mask-image: radial-gradient(circle at 50% 42%, #000 0%, transparent 72%);
+}
+
+.gate-card {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  gap: 14px;
+  width: min(420px, 100%);
+  padding: clamp(30px, 4vw, 42px);
+  border: 1px solid rgba(220, 231, 251, 0.94);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(18px);
+  animation: gateRise 420ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.gate-card h1 {
+  max-width: none;
+  margin: 0;
+  color: var(--ink);
+  font-size: clamp(24px, 3.4vw, 30px);
+  line-height: 1.12;
+  letter-spacing: -0.04em;
+  font-weight: 840;
+  text-align: center;
+}
+
+.gate-card > p {
+  margin: 0 0 6px;
+  color: var(--muted);
+  font-size: 16px;
+  line-height: 1.55;
+  text-align: center;
+}
+
+.gate-input {
+  width: 100%;
+  min-height: 52px;
+  padding: 0 16px;
+  border: 1px solid var(--line);
+  border-radius: 11px;
+  color: var(--ink);
+  background: rgba(255, 255, 255, 0.78);
+  font-size: 16px;
+  transition:
+    border-color 220ms ease,
+    box-shadow 220ms ease,
+    background 220ms ease;
+}
+
+.gate-input::placeholder {
+  color: var(--muted);
+}
+
+.gate-input:hover:not(:disabled) {
+  border-color: rgba(36, 104, 242, 0.5);
+}
+
+.gate-input:focus-visible {
+  outline: none;
+  border-color: rgba(36, 104, 242, 0.92);
+  background: #ffffff;
+  box-shadow: 0 0 0 4px rgba(36, 104, 242, 0.18);
+}
+
+.gate-input:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.gate-submit {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  min-height: 52px;
+  padding: 0 24px;
+  border-radius: 11px;
+  color: #ffffff;
+  background: linear-gradient(135deg, #2c74ff, #145ce9);
+  box-shadow: 0 18px 32px -24px rgba(20, 92, 233, 0.78);
+  font-size: 17px;
+  font-weight: 780;
+  cursor: pointer;
+  transition:
+    transform 260ms cubic-bezier(0.16, 1, 0.3, 1),
+    background 260ms ease,
+    box-shadow 260ms ease,
+    opacity 260ms ease;
+}
+
+.gate-submit:hover:not(:disabled) {
+  transform: translateY(-2px);
+  background: linear-gradient(135deg, #3b7fff, #0f54df);
+}
+
+.gate-submit:active:not(:disabled) {
+  transform: translateY(1px) scale(0.985);
+}
+
+.gate-submit:focus-visible {
+  outline: none;
+  box-shadow:
+    0 0 0 4px rgba(36, 104, 242, 0.28),
+    0 18px 32px -24px rgba(20, 92, 233, 0.78);
+}
+
+.gate-submit:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.gate-submit:disabled::before {
+  content: "";
+  width: 16px;
+  height: 16px;
+  border-radius: 999px;
+  border: 2px solid rgba(255, 255, 255, 0.45);
+  border-top-color: #ffffff;
+  animation: gateSpin 720ms linear infinite;
+}
+
+.gate-error {
+  padding: 12px 14px;
+  border: 1px solid rgba(203, 76, 76, 0.24);
+  border-radius: 14px;
+  color: #9a3838;
+  background: rgba(255, 244, 244, 0.92);
+  font-size: 14px;
+  line-height: 1.5;
+  text-align: center;
+  animation: gateRise 240ms ease both;
+}
+
+@keyframes gateRise {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes gateSpin {
+  to { transform: rotate(360deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gate-card,
+  .gate-error { animation: none; }
+  .gate-submit:hover:not(:disabled),
+  .gate-submit:active:not(:disabled) { transform: none; }
+  .gate-submit:disabled::before { animation: none; }
+}
