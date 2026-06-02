@@ -8,7 +8,7 @@ type Props = {
 };
 
 // 模块级常量：稳定引用，避免每次渲染触发 GradientBlinds 的 WebGL 重建
-const GATE_GRADIENT = ['#0e4fd0', '#2468f2', '#66a5ff'];
+const GATE_GRADIENT = ['#031014', '#123326', '#57c466'];
 
 export function LandingPage({ onAuth }: Props) {
   // 动画为 RAF 驱动，CSS 的 prefers-reduced-motion 停不了它，故在此显式探测并 paused

@@ -1,0 +1,50 @@
+- main [ref=e3]:
+  - navigation "主导航" [ref=e4]:
+    - link "BG Remover 首页" [ref=e5] [cursor=pointer]:
+      - /url: /
+      - img [ref=e6]
+      - generic [ref=e11]: BG Remover
+    - button "退出登录" [ref=e13] [cursor=pointer]
+  - generic [ref=e14]:
+    - generic [ref=e15]:
+      - heading "免费在线 移除图片背景" [level=1] [ref=e16]:
+        - text: 免费在线
+        - generic [ref=e17]: 移除图片背景
+      - paragraph [ref=e18]: 一键自动移除图片背景，快速获得透明背景 PNG 图片
+      - button "Choose File 上传图片 或拖拽图片到此处上传 支持 JPG、PNG、WebP，最大 20MB（上传前会自动压缩）" [ref=e19] [cursor=pointer]:
+        - button "Choose File" [ref=e20]
+        - button "上传图片" [active] [ref=e21]:
+          - img [ref=e22]
+          - text: 上传图片
+        - strong [ref=e24]: 或拖拽图片到此处上传
+        - generic [ref=e25]: 支持 JPG、PNG、WebP，最大 20MB（上传前会自动压缩）
+      - generic "处理模式" [ref=e26]:
+        - button "人物优先 减少人物边缘漏抠" [ref=e27] [cursor=pointer]:
+          - generic [ref=e28]: 人物优先
+          - generic [ref=e29]: 减少人物边缘漏抠
+        - button "商品优先 适合产品主图" [ref=e30] [cursor=pointer]:
+          - generic [ref=e31]: 商品优先
+          - generic [ref=e32]: 适合产品主图
+        - button "自动识别 通用图片处理" [ref=e33] [cursor=pointer]:
+          - generic [ref=e34]: 自动识别
+          - generic [ref=e35]: 通用图片处理
+      - generic [ref=e36]:
+        - button "自动尺寸" [ref=e37] [cursor=pointer]
+        - button "预览图" [ref=e38] [cursor=pointer]
+        - button "原图尺寸" [ref=e39] [cursor=pointer]
+        - button "重新处理" [ref=e71] [cursor=pointer]
+      - generic [ref=e72]: 背景移除失败，请换一张图片重试。
+    - generic [ref=e40]:
+      - generic "处理前后对比" [ref=e41]:
+        - generic [ref=e42]:
+          - generic [ref=e43]: 原图
+          - img "原图预览" [ref=e73]
+        - generic [ref=e53]: 处理后
+        - generic [ref=e63]: ‹›
+      - generic [ref=e64]:
+        - generic [ref=e65]:
+          - generic [ref=e66]: 当前文件
+          - strong [ref=e67]: new.png
+        - button "下载透明 PNG" [disabled] [ref=e68]:
+          - img [ref=e69]
+          - text: 下载透明 PNG

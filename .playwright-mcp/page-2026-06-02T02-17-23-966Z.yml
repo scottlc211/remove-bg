@@ -1,0 +1,73 @@
+- main [ref=e3]:
+  - navigation "主导航" [ref=e4]:
+    - link "BG Remover 首页" [ref=e5] [cursor=pointer]:
+      - /url: /
+      - img [ref=e6]
+      - generic [ref=e11]: BG Remover
+    - generic "页面导航" [ref=e12]:
+      - link "首页" [ref=e13] [cursor=pointer]:
+        - /url: "#home"
+      - link "使用方法" [ref=e14] [cursor=pointer]:
+        - /url: "#how"
+    - generic [ref=e15]:
+      - button "简体中文 ⌄" [ref=e16] [cursor=pointer]:
+        - img [ref=e17]
+        - text: 简体中文
+        - generic [ref=e21]: ⌄
+      - link "登录 →" [ref=e22] [cursor=pointer]:
+        - /url: "#auth"
+  - region "产品介绍与登录" [ref=e23]:
+    - generic [ref=e26]:
+      - heading "免费在线 移除图片背景" [level=1] [ref=e27]:
+        - text: 免费在线
+        - generic [ref=e28]: 移除图片背景
+      - paragraph [ref=e29]: 一键自动移除图片背景，快速获得透明背景 PNG 图片
+      - list [ref=e30]:
+        - listitem [ref=e31]: ✓ AI 智能识别主体
+        - listitem [ref=e32]: ✓ 服务端处理，秒级出图
+        - listitem [ref=e33]: ✓ 密码保护，私享访问
+        - listitem [ref=e34]: ✓ 高清透明 PNG 输出
+    - form "访问密码" [ref=e36]:
+      - heading "BG Remover" [level=1] [ref=e37]
+      - paragraph [ref=e38]: 请输入访问密码进入
+      - textbox "访问密码" [ref=e39]
+      - button "进入" [ref=e40] [cursor=pointer]
+  - region "核心能力" [ref=e41]:
+    - article [ref=e42]:
+      - img [ref=e43]
+      - generic [ref=e45]:
+        - heading "AI 智能识别" [level=2] [ref=e46]
+        - paragraph [ref=e47]: 自动识别主体，精确移除背景
+    - article [ref=e48]:
+      - img [ref=e49]
+      - generic [ref=e51]:
+        - heading "快速处理" [level=2] [ref=e52]
+        - paragraph [ref=e53]: 服务端处理，页面不再被模型阻塞
+    - article [ref=e54]:
+      - img [ref=e55]
+      - generic [ref=e58]:
+        - heading "密码保护" [level=2] [ref=e59]
+        - paragraph [ref=e60]: 预共享密码守门，避免链接被外人滥用
+    - article [ref=e61]:
+      - img [ref=e62]
+      - generic [ref=e65]:
+        - heading "高清输出" [level=2] [ref=e66]
+        - paragraph [ref=e67]: 输出透明背景 PNG 图片
+  - region "如何使用" [ref=e68]:
+    - heading "如何使用" [level=2] [ref=e69]
+    - generic [ref=e70]:
+      - article [ref=e71]:
+        - generic [ref=e72]: "1"
+        - img [ref=e73]
+        - heading "上传图片" [level=3] [ref=e75]
+        - paragraph [ref=e76]: 上传需要移除背景的图片
+      - article [ref=e77]:
+        - generic [ref=e78]: "2"
+        - img [ref=e79]
+        - heading "AI 自动处理" [level=3] [ref=e81]
+        - paragraph [ref=e82]: 自动识别并移除背景
+      - article [ref=e83]:
+        - generic [ref=e84]: "3"
+        - img [ref=e85]
+        - heading "下载图片" [level=3] [ref=e87]
+        - paragraph [ref=e88]: 下载透明背景的 PNG 图片
